@@ -21,7 +21,7 @@ $output = curl_exec($ch);
 curl_close($ch);
 
 if ($output === false) {
-    die('Erreur lors de la récupération des coordonnées géographiques.');
+    echo('Erreur lors de la récupération des coordonnées géographiques.');
 }
 
 $xml = simplexml_load_string($output);
@@ -43,12 +43,12 @@ $output = curl_exec($ch);
 curl_close($ch);
 
 if ($output === false) {
-    die('Erreur lors de la récupération des informations météo.');
+    echo('Erreur lors de la récupération des informations météo.');
 }
 
 $xml = new DOMDocument;
 if (!$xml->loadXML($output)) {
-    die('Erreur lors du chargement du xml');
+    echo('Erreur lors du chargement du xml');
 }
 
 $xsl = new DOMDocument;
@@ -79,8 +79,9 @@ echo $proc->transformToXML($xml);
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
         crossorigin=""></script>
 <script>
-    var latitude = <?php echo $latitude ?>;
-    var longitude = <?php echo $longitude ?>;
+    var latitude = <?php if ($latitude) { echo $latitude; } else { echo 48.67103; } ?>;
+    var longitude = <?php if ($longitude) { echo $longitude; } else { echo 6.15083; } ?>;
+
     var map = L.map('map').setView([latitude, longitude], 15);
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
@@ -103,7 +104,7 @@ echo $proc->transformToXML($xml);
     // Qualité de l'air
     var qualite = <?php echo getQualite(); ?>;
     if (qualite && qualite.features && qualite.features[0] && qualite.features[0].attributes) {
-        document.getElementById('qualite').innerHTML = `Qualité de l'air : ${ qualite.features[0].attributes.lib_qual}`;
+        document.getElementById('qualite').innerHTML = `Qualité de l'air : ${qualite.features[0].attributes.lib_qual}`;
     } else {
         console.error('Erreur lors de la récupération des données de qualité de l\'air.');
     }
@@ -133,6 +134,7 @@ echo $proc->transformToXML($xml);
         <li><a href="https://carto.g-ny.org/data/cifs/cifs_waze_v2.json">Circulation API</a></li>
         <li><a href="https://services3.arcgis.com/Is0UwT37raQYl9Jj/arcgis/rest/services/ind_grandest/FeatureServer/0/query?where=lib_zone%3D%27Nancy%27&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&resultType=none&distance=0.0&units=esriSRUnit_Meter&returnGeodetic=false&outFields=*&returnGeometry=true&featureEncoding=esriDefault&multipatchOption=xyFootprint&maxAllowableOffset=&geometryPrecision=&outSR=&datumTransformation=&applyVCSProjection=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&returnQueryGeometry=false&returnDistinctValues=false&cacheHint=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&having=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&returnExceededLimitFeatures=true&quantizationParameters=&sqlFormat=none&f=pjson&token=">Qualité de l'air API</a></li>
         <li><a href="https://api-adresse.data.gouv.fr/search/?q=boulevard+charlemagne+nancy">Adresse API</a></li>
+        <li><a href="https://github.com/MaximeBiechy/atmosphere">Github</a> </li>
     </ul>
 </div>
 
